@@ -10,8 +10,15 @@ RUN apt-get update && \
     apt install -y tesseract-ocr tesseract-ocr-ukr
 
 RUN apt-get update -y
-RUN apt-get install -y python-pip
+RUN apt-get install -y python-pip python3-pip
+RUN apt-get install -y python-numpy python-opencv
+
+RUN pip install --upgrade pip
 RUN pip install pytesseract
+
+RUN pip install numpy
+RUN pip install scikit-image
+RUN pip install --upgrade imutils
 
 COPY ./requirements.txt /app/requirements.txt
 
