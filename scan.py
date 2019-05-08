@@ -7,7 +7,7 @@ import argparse
 import imutils
 
 def preprocess_image():
-	image = cv2.imread("bills/molinary.jpg")
+	image = cv2.imread("bills/eva-2.jpg")
 	ratio = image.shape[0] / 500.0
 	orig = image.copy()
 	image = imutils.resize(image, height = 500)
@@ -16,6 +16,18 @@ def preprocess_image():
 	gray = cv2.GaussianBlur(gray, (5, 5), 0)
 	edged = cv2.Canny(gray, 75, 200)
 
-	cv2.imwrite("bills/result/bill-test.jpg", edged)
+	cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	cnts = imutils.grab_contours(cnts)
+	cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:5]
+ 
+	for c in cnts:
+		peri = cv2.arcLength(c, True)
+		approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+ 
+		if len(approx) == 4:
+			screenCnt = approx
+			break
+ 
+	cv2.drawContours(image, [screenCnt], -1, (0, 255, 0), 2)
 
 preprocess_image()
